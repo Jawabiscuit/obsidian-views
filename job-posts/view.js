@@ -20,9 +20,10 @@ if (posts.length > 0) {
         (p["direct link"] ?? p["recruiter link"]),
         (p["job type"] ?? "-"),
         (p["work from"] ?? "-"),
+        (p["application sent"] ? "applied ☑" : ""),
     ]);
     dv.header(2, posts.length > 1 ? "📌 Posts" : "📌 Post");
-    dv.table(["Role", "Post", "Type", "Work From"], fields);
+    dv.table(["Role", "Post", "Type", "Work From", "Applied"], fields);
 }
 
 const rejects = page.file.inlinks.where(p => {
@@ -42,9 +43,10 @@ if (rejects.length > 0) {
         (p["direct link"] ?? p["recruiter link"]),
         (p["job type"] ?? "-"),
         (p["work from"] ?? "-"),
+        (p["application sent"] ? "applied ☑" : ""),
     ]);
     dv.header(2, rejects.length > 1 ? "👎 Rejections" : "👎 Denied");
-    dv.table(["Role", "Post", "Type", "Work From"], fields);;
+    dv.table(["Role", "Post", "Type", "Work From", "Applied"], fields);
 }
 
 const interviews = page.file.inlinks.where(p => {
@@ -64,7 +66,8 @@ if (interviews.length > 0) {
         (p["direct link"] ?? p["recruiter link"]),
         (p["job type"] ?? "-"),
         (p["work from"] ?? "-"),
+        (p["application sent"] ? "applied ☑" : ""),
     ]);
     dv.header(2, interviews.length > 1 ? "📞 Interviews" : "📞 Interview");
-    dv.table(["Role", "Post", "Type", "Work From"], fields);;
+    dv.table(["Role", "Post", "Type", "Work From", "Applied"], fields);
 }
