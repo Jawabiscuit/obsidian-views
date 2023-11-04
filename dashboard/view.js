@@ -3,7 +3,9 @@ dv.header(1, "Dashboard");
 icon = "🎯";
 header = "Goal";
 headerPlural = header + "s";
-pages = dv.pages("#goal").where(p => !p.file.path.includes("template"));
+pages = dv.pages("#goal")
+    .where(p => p.status != "fin")
+    .where(p => !p.file.path.includes("template"));
 dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
 dv.table([], dv.pages("#goal")
     .sort(p => p.created, "desc")
@@ -19,7 +21,9 @@ dv.table([], dv.pages("#goal")
 icon = "🏗";
 header = "Project";
 headerPlural = header + "s";
-pages = dv.pages("#project").where(p => !p.file.path.includes("template"));
+pages = dv.pages("#project")
+    .where(p => p.status === "ip")
+    .where(p => !p.file.path.includes("template"));
 dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
 dv.table([], dv.pages("#project")
     .sort(p => p.created, "desc")
