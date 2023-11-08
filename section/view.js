@@ -1,4 +1,4 @@
-const page = await dv.page(input.file);
+const page = dv.page(input.file);
 const searchTerm = input.searchTerm;
 const header = input.headerName;
 const headerPlural = input.headerNamePlural;
