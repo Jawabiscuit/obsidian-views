@@ -1,15 +1,6 @@
-const { update } = app.plugins.plugins["metaedit"].api
-dv.header(1, "Dashboard");
+const btn = require(app.vault.adapter.basePath + "/_views/common/update-button.js")
 
-const createButton = (pn, pv, fpath) => {
-    const btn = dv.container.createEl('button', { "text": `Done (${pv})` });
-    const file = app.vault.getAbstractFileByPath(fpath)
-    btn.addEventListener('click', async (evt) => {
-        evt.preventDefault();
-        await update(pn, pv, file);
-    });
-    return btn;
-}
+dv.header(1, "Dashboard");
 
 let icon;
 let header;
@@ -70,7 +61,7 @@ if (pages.length) {
         .map(p => [
             (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
             p.bar,
-            createButton('status', 'fin', p.file.path),
+            (!["fin", "na", "cmpt"].includes(p.status) ? btn.createButton(dv, "status", "fin", p.file.path) : null),
         ])
     );
 }
@@ -92,7 +83,7 @@ if (pages.length) {
         .map(p => [
             (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
             p.subtitle,
-            createButton('status', 'fin', p.file.path),
+            (!["fin", "na", "cmpt"].includes(p.status) ? btn.createButton(dv, "status", "fin", p.file.path) : null),
         ])
     );
 }
@@ -114,7 +105,7 @@ if (pages.length) {
             (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
             p.status,
             (p.ogDescription ?? p.title),
-            createButton('status', 'watched', p.file.path)
+            (!["fin", "watched"].includes(p.status) ? btn.createButton(dv, "status", "watched", p.file.path) : null),
         ])
     );
 }

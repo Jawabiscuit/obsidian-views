@@ -1,19 +1,9 @@
-// Find all linked projects
-const goalPage = dv.page(input.file);
-const projects = goalPage.file.inlinks.where((p) => {
-    const mp = dv.page(p.path);
-    return mp.tags?.includes("project");
-});
+const pb = require(app.vault.adapter.basePath + "/_views/common/progress-bar.js");
 
-const totalGoalTasks = goalPage.file.tasks.length;
+const page = dv.page(input.file);
+const searchTerms = pb.getSearchTerms(input);
+const pages = pb.findLinkedPages(dv, page, searchTerms);
+pages.values.unshift(page);
+const total = pb.getTotalTasks(pages.values);
 
-let totalProjectTasks = 0;
-projects.values.reduce((acc, p) => {
-    const mp = dv.page(p.path);
-    const tasks = mp.file.tasks;
-
-    totalProjectTasks += tasks.length;
-    return mp.file.tasks.length;
-}, 0);
-
-dv.span(totalGoalTasks + totalProjectTasks);
+dv.span(total);
