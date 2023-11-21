@@ -16,12 +16,16 @@ const pages = links.map(p => dv.page(p.path)).sort(p => p.file.ctime, "desc");
 
 if (pages.length > 0)
 {
-    const fields = pages.map(p => [
-        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-        p.status,
-        p.bar,
-        (!["fin", "na", "cmpt"].includes(p.status) ? btn.createButton(dv, "status", "fin", p.file.path) : null)
-    ]);
     dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-    dv.table([header, "Status", "Progress", "Update"], fields);
+    if (input.list) {
+        dv.list(pages.map(p => (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link)));
+    } else {
+        const fields = pages.map(p => [
+            (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
+            p.status,
+            p.bar,
+            (!["fin", "na", "cmpt", null].includes(p.status) ? btn.createButton(dv, "status", "fin", p.file.path) : null)
+        ]);
+        dv.table([header, "Status", "Progress", "Update"], fields);
+    }
 }
