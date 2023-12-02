@@ -1,5 +1,4 @@
 const btn = require(app.vault.adapter.basePath + "/_views/common/update-button.js")
-const pb = require(app.vault.adapter.basePath + "/_views/common/progress-bar.js");
 
 const page = dv.page(input.file);
 const searchTerm = input.searchTerm;
@@ -24,7 +23,10 @@ if (pages.length > 0)
             (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
             p.status,
             p.bar,
-            (!["fin", "na", "cmpt", null].includes(p.status) ? btn.createButton(dv, "status", "fin", p.file.path) : null)
+            (!["fin", "na", "cmpt", "watched", null].includes(p.status) ?
+                btn.createButton(
+                    dv, "status", (["fin", "na", "cmpt", null].includes(p.status) ? "fin" : "watched"), p.file.path
+                ) : null)
         ]);
         dv.table([header, "Status", "Progress", "Update"], fields);
     }
