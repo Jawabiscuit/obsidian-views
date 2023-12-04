@@ -14,10 +14,8 @@ pages = dv.pages("#goal")
     .where(p => p.status != "fin")
     .where(p => !p.file.path.includes("template"));
 dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-dv.table([], dv.pages("#goal")
+dv.table([], pages
     .sort(p => p.created, "desc")
-    .where(p => p.status != "fin")
-    .where(p => !p.file.path.includes("template"))
     .map(p => [
         (p.img ? `<img class="myTableImg" src="${app.vault.adapter.basePath}/${p.img.path}">` : null),
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
@@ -32,10 +30,8 @@ pages = dv.pages("#project")
     .where(p => p.status === "ip")
     .where(p => !p.file.path.includes("template"));
 dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-dv.table([], dv.pages("#project")
+dv.table([], pages
     .sort(p => p.created, "desc")
-    .where(p => p.status === "ip")
-    .where(p => !p.file.path.includes("template"))
     .map(p => [
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
         p.subtitle,
@@ -53,11 +49,8 @@ pages = dv.pages("#daily")
     .where(p => p.file.day && p.file.day > dv.date("now") - dv.duration("30 days"));
 if (pages.length) {
     dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-    dv.table([], dv.pages("#daily")
+    dv.table([], pages
         .sort(p => p.created, "desc")
-        .where(p => p.status !== "fin")
-        .where(p => !p.file.path.includes("template"))
-        .where(p => p.file.day && p.file.day > dv.date("now") - dv.duration("30 days"))
         .map(p => [
             (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
             p.bar,
@@ -75,11 +68,8 @@ pages = dv.pages("#reference")
     .where(p => p.file.day && p.file.day > dv.date("now") - dv.duration("30 days"));
 if (pages.length) {
     dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-    dv.table([], dv.pages("#reference")
+    dv.table([], pages
         .sort(p => p.created, "desc")
-        .where(p => !["fin", "na", null].includes(p.status))
-        .where(p => !p.file.path.includes("template"))
-        .where(p => p.file.day && p.file.day > dv.date("now") - dv.duration("30 days"))
         .map(p => [
             (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
             p.subtitle,
@@ -96,10 +86,8 @@ pages = dv.pages("#yt")
     .where(p => !p.file.path.includes("template"));
 if (pages.length) {
     dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-    dv.table([], dv.pages("#yt")
+    dv.table([], pages
         .sort(p => p.created, "desc")
-        .where(p => !p.file.path.includes("template"))
-        .where(p => p.status != "watched")
         .map(p => [
             (p.thumbnailUrl ? `<img class="myTableImg" src="${p.thumbnailUrl}">` : null),
             (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
