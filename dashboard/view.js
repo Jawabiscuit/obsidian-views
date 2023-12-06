@@ -1,99 +1,61 @@
-const btn = require(app.vault.adapter.basePath + "/_views/common/update-button.js");
+const status = require(app.vault.adapter.basePath + "/_views/common/status.js");
+const views = require(app.vault.adapter.basePath + "/_views/common/views.js");
+const category = require(app.vault.adapter.basePath + "/_views/common/category.js");
+
+const pageFindMethods = {
+    daily: findPagesActiveRanged,
+};
+
+const categories = Object.keys(category);
+const noteInfoBatch = collectNoteInfo(categories);
 
 dv.header(1, "Dashboard");
+views.createSections(dv, noteInfoBatch);
 
-let icon;
-let header;
-let headerPlural;
-let pages;
+/**                             Helper Functions                              */
 
-icon = "🎯";
-header = "Goal";
-headerPlural = header + "s";
-pages = dv.pages("#goal")
-    .where(p => p.status != "fin")
-    .where(p => !p.file.path.includes("template"));
-dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-dv.table([], pages
-    .sort(p => p.created, "desc")
-    .map(p => [
-        (p.img ? `<img class="myTableImg" src="${app.vault.adapter.basePath}/${p.img.path}">` : null),
-        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-        p.bar],
-    ),
-);
-
-icon = "🏗";
-header = "Project";
-headerPlural = header + "s";
-pages = dv.pages("#project")
-    .where(p => p.status === "ip")
-    .where(p => !p.file.path.includes("template"));
-dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-dv.table([], pages
-    .sort(p => p.created, "desc")
-    .map(p => [
-        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-        p.subtitle,
-        p.bar,
-        p.goal],
-    ),
-);
-
-icon = "📓";
-header = "Daily";
-headerPlural = "Dailies";
-pages = dv.pages("#daily")
-    .where(p => p.status !== "fin")
-    .where(p => !p.file.path.includes("template"))
-    .where(p => p.file.day && p.file.day > dv.date("now") - dv.duration("30 days"));
-if (pages.length) {
-    dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-    dv.table([], pages
-        .sort(p => p.created, "desc")
-        .map(p => [
-            (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-            p.bar,
-            (!["fin", "na", "cmpt"].includes(p.status) ? btn.createButton(dv, "status", "fin", p.file.path) : null),
-        ]),
-    );
+/**
+ * Get info used when displaying a view.
+ * For now, categories equate to tags in Obsidian but it's an abstraction in case support
+ * for paths is desired.
+ * @param {Array<string>} categories - Array of category keys
+ * @return {Array<objects>} An array of info objects filtered by key
+ */
+function collectNoteInfo(categories) {
+    const result = [];
+    for (const key of categories) {
+        if (Object.hasOwn(category, key)) {
+            noteInfo = {...category[key]};
+            if (Object.keys(pageFindMethods).includes(key))
+                noteInfo.pages = pageFindMethods[key](`#${key}`);
+            else
+                noteInfo.pages = findPagesActive(`#${key}`);
+            result.push(noteInfo);
+        }
+    }
+    return result;
 }
 
-icon = "📚";
-header = "Reference";
-headerPlural = header + "s";
-pages = dv.pages("#reference")
-    .where(p => !["fin", "na", null].includes(p.status))
-    .where(p => !p.file.path.includes("template"))
-    .where(p => p.file.day && p.file.day > dv.date("now") - dv.duration("30 days"));
-if (pages.length) {
-    dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-    dv.table([], pages
-        .sort(p => p.created, "desc")
-        .map(p => [
-            (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-            p.subtitle,
-            (!["fin", "na", "cmpt"].includes(p.status) ? btn.createButton(dv, "status", "fin", p.file.path) : null),
-        ]),
-    );
+/**
+ * Searches for pages based on searchTerm that have an active status.
+ * @param {string} searchTerm - Term used to search for pages.
+ * @return {Array<object>} Array of pages matching criteria, excluding those under 'template' path.
+ */
+function findPagesActive(searchTerm) {
+    return dv.pages(searchTerm)
+        .where(p => !p.file.path.includes("template"))
+        .where(p => status.allActiveValues.includes(p.status));
 }
 
-icon = "📼";
-header = "Video";
-headerPlural = header + "s";
-pages = dv.pages("#yt")
-    .where(p => p.status != "watched")
-    .where(p => !p.file.path.includes("template"));
-if (pages.length) {
-    dv.header(2, pages.length > 1 ? `${icon} ${headerPlural}` : `${icon} ${header}`);
-    dv.table([], pages
-        .sort(p => p.created, "desc")
-        .map(p => [
-            (p.thumbnailUrl ? `<img class="myTableImg" src="${p.thumbnailUrl}">` : null),
-            (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-            p.status,
-            (p.ogDescription ?? p.title),
-            (!["fin", "watched"].includes(p.status) ? btn.createButton(dv, "status", "watched", p.file.path) : null),
-        ]),
-    );
+/**
+ * Searches for pages based on searchTerm within a desired date range.
+ * @param {string} searchTerm - Term used to search for pages.
+ * @param {string} [interval="7 days"] - When subtracted from the current day yields the start of the date range.
+ * @return {Array<object>} Array of pages matching criteria, excluding those under 'template' path.
+ */
+function findPagesActiveRanged(searchTerm, interval="7 days") {
+    return dv.pages(searchTerm)
+        .where(p => !p.file.path.includes("template"))
+        .where(p => p.file.day && p.file.day > dv.date("now") - dv.duration(`${interval}`))
+        .where(p => status.allActiveValues.includes(p.status));
 }
