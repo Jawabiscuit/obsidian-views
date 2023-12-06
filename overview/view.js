@@ -5,7 +5,7 @@
 
 const {DateTime} = dv.luxon;
 const btn = require(app.vault.adapter.basePath + "/_views/common/update-button.js");
-const statuses = require(app.vault.adapter.basePath + "/_views/common/status.js");
+const status = require(app.vault.adapter.basePath + "/_views/common/status.js");
 const category = require(app.vault.adapter.basePath + "/_views/common/category.js");
 
 const interval = input.interval ?? "7";
@@ -81,23 +81,10 @@ function createTableView(pages) {
     const mappedPages = sortedPages.map(p => [
         p.file.aliases?.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link,
         p.bar,
-        !statuses.allInactiveValues.includes(p.status) ?
-            btn.createButton(dv, "status", determineInactiveStatus(p), p.file.path) :
+        !status.allInactiveValues.includes(p.status) ?
+            btn.createButton(dv, "status", status.determineInactiveStatus(p), p.file.path) :
             null,
     ]);
 
     dv.table(["Status", "Progress", "Update"], mappedPages);
-}
-
-/**
- * Determines the inactive status of a page based on its current status value.
- * @param {Object} page - Page object with a 'status' property.
- * @return {string} Status string (E.g. 'fin', 'watched', or 'unknown').
- */
-function determineInactiveStatus(page) {
-    return statuses.activeValues.includes(page.status) ?
-        "fin" :
-        statuses.activeVideoValues.includes(page.status) ?
-            "watched" :
-            "unknown";
 }
