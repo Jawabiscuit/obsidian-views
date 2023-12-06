@@ -1,4 +1,4 @@
-const btn = require(app.vault.adapter.basePath + "/_views/common/update-button.js")
+const btn = require(app.vault.adapter.basePath + "/_views/common/update-button.js");
 
 dv.header(1, "Dashboard");
 
@@ -19,8 +19,8 @@ dv.table([], pages
     .map(p => [
         (p.img ? `<img class="myTableImg" src="${app.vault.adapter.basePath}/${p.img.path}">` : null),
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-        p.bar]
-    )
+        p.bar],
+    ),
 );
 
 icon = "🏗";
@@ -36,8 +36,8 @@ dv.table([], pages
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
         p.subtitle,
         p.bar,
-        p.goal]
-    )
+        p.goal],
+    ),
 );
 
 icon = "📓";
@@ -55,7 +55,7 @@ if (pages.length) {
             (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
             p.bar,
             (!["fin", "na", "cmpt"].includes(p.status) ? btn.createButton(dv, "status", "fin", p.file.path) : null),
-        ])
+        ]),
     );
 }
 
@@ -74,7 +74,7 @@ if (pages.length) {
             (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
             p.subtitle,
             (!["fin", "na", "cmpt"].includes(p.status) ? btn.createButton(dv, "status", "fin", p.file.path) : null),
-        ])
+        ]),
     );
 }
 
@@ -94,6 +94,6 @@ if (pages.length) {
             p.status,
             (p.ogDescription ?? p.title),
             (!["fin", "watched"].includes(p.status) ? btn.createButton(dv, "status", "watched", p.file.path) : null),
-        ])
+        ]),
     );
 }

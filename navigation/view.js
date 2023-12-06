@@ -6,7 +6,7 @@
     JA 2023-11-06
 */
 const dateFmt = "ddd Do MMM";
-const none = '(none)';
+const none = "(none)";
 const page = dv.page(input.file);
 const regex = /^(\d{4}-\d{2}-\d{2})(.*)$/;
 const pages = dv.pages(`"${page.file.folder}"`)
@@ -23,16 +23,14 @@ const current = `(${moment(isoDate).format(dateFmt)})`;
 const today = pages.find(p => p[1].toISODate() == isoDate);
 const next = pages.find(p => p[1].toISODate() > isoDate);
 let prev;
-pages.forEach(function (p, i) {
-    if (p[1].toISODate() < isoDate
-    ) {
+pages.forEach(function(p, i) {
+    if (p[1].toISODate() < isoDate)
         prev = p;
-    }
 });
 
-let nav = [];
+const nav = [];
 nav.push(prev ? `[[${prev[0]}|${moment(prev[1].toISODate()).format(dateFmt)}]]` : none);
 nav.push(today ? moment(today[1].toISODate()).format(dateFmt) : current);
 nav.push(next ? `[[${next[0]}|${moment(next[1].toISODate()).format(dateFmt)}]]` : none);
 
-dv.paragraph('◀ ' + nav[0] + ' | ' + nav[1] + ' | ' + nav[2] + ' ▶');
+dv.paragraph("◀ " + nav[0] + " | " + nav[1] + " | " + nav[2] + " ▶");
