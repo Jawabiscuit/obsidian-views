@@ -6,6 +6,7 @@
 const {DateTime} = dv.luxon;
 const btn = require(app.vault.adapter.basePath + "/_views/common/update-button.js");
 const statuses = require(app.vault.adapter.basePath + "/_views/common/status.js");
+const category = require(app.vault.adapter.basePath + "/_views/common/category.js");
 
 const interval = input.interval ?? "7";
 const intervalDays = `${interval} days`;
@@ -13,64 +14,12 @@ const dateStr = dv.func.regexreplace(input.file, "^([0-9]+-[0-9]+-[0-9]+)(.*)", 
 const startDay = DateTime.fromMillis(dv.date(dateStr) - dv.duration(intervalDays));
 const endDay = dv.date(dateStr);
 
-const noteInfo = {
-    goal: {
-        icon: "🎯",
-        header: "Goal",
-        headerPlural: "Goals",
-        view: "table",
-    },
-    project: {
-        icon: "🏗",
-        header: "Project",
-        headerPlural: "Projects",
-        view: "table",
-    },
-    daily: {
-        icon: "📆",
-        header: "Daily",
-        headerPlural: "Dailies",
-        view: "table",
-    },
-    // View these from within projects
-    //    journal: {
-    //        icon: "📓",
-    //        header: "Journal",
-    //        headerPlural: "Journals",
-    //        view: "table",
-    //    },
-    //    reference: {
-    //        icon: "📚",
-    //        header: "Reference",
-    //        headerPlural: "Reference",
-    //        view: "table",
-    //    },
-    meeting: {
-        icon: "🧛‍♂🧛‍♀",
-        header: "Meeting",
-        headerPlural: "Meetings",
-        view: "table",
-    },
-    yt: {
-        icon: "📼",
-        header: "Video",
-        headerPlural: "Videos",
-        view: "table",
-    },
-    chat: {
-        icon: "🤖💬",
-        header: "Chat",
-        headerPlural: "Chats",
-        view: "table",
-    },
-};
-
-for (const categoryKey in noteInfo) {
+for (const categoryKey in category) {
     // For codebases that do support ES2022
-    // Guard clause - only proceed if noteInfo has its own property named categoryKey
-    if (Object.hasOwn(noteInfo, categoryKey)) {
+    // Guard clause - only proceed if category has its own property named categoryKey
+    if (Object.hasOwn(category, categoryKey)) {
         const pages = findPages(`#${categoryKey}`, startDay, endDay);
-        createElement(pages, noteInfo[categoryKey]);
+        createElement(pages, category[categoryKey]);
     }
 }
 
