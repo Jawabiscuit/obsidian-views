@@ -1,6 +1,14 @@
 const btn = require(app.vault.adapter.basePath + "/_views/common/update-button.js");
 const status = require(app.vault.adapter.basePath + "/_views/common/status.js");
 
+const viewConstructors = {
+    table: createProgressButtonTV,
+    progressButtonTV: createProgressButtonTV,
+    progressImageTV: createProgressImageTV,
+    projectTV: createProjectTV,
+    youTubeTV: createYouTubeTV,
+};
+
 /**
  * Takes in a batch of note infos to display an creates the HTML text element for each.
  * @param {object} dv - The dataview object
@@ -35,7 +43,7 @@ function createSection(dv, noteInfo) {
 
             dv.list(listItems);
         } else {
-            createProgressButtonTV(dv, pages);
+            viewConstructors[noteInfo.view](dv, pages);
         }
     }
 }
@@ -50,7 +58,6 @@ function createSection(dv, noteInfo) {
  */
 function createProgressButtonTV(dv, pages) {
     const sortedPages = pages.sort((a, b) => a.created - b.created);
-
     const mappedPages = sortedPages.map(p => [
         p.file.aliases?.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link,
         p.bar,
@@ -62,8 +69,65 @@ function createProgressButtonTV(dv, pages) {
     dv.table(["Status", "Progress", "Update"], mappedPages);
 }
 
+/**
+ * Description
+ * @param {any} dv
+ * @param {any} pages
+ * @return {any}
+ */
+function createProgressImageTV(dv, pages) {
+    const sortedPages = pages.sort((a, b) => a.created - b.created);
+    const mappedPages = sortedPages.map(p => [
+        (p.img ? `<img class="myTableImg" src="${app.vault.adapter.basePath}/${p.img.path}">` : null),
+        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
+        p.bar,
+    ]);
+
+    dv.table([], mappedPages);
+}
+
+/**
+ * Description
+ * @param {any} dv
+ * @param {any} pages
+ * @return {any}
+*/
+function createProjectTV(dv, pages) {
+    const sortedPages = pages.sort((a, b) => a.created - b.created);
+    const mappedPages = sortedPages.map(p => [
+        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
+        p.subtitle,
+        p.bar,
+        p.goal,
+    ]);
+    dv.table([], mappedPages);
+}
+
+/**
+ * Description
+ * @param {any} dv
+ * @param {any} pages
+ * @return {any}
+*/
+function createYouTubeTV(dv, pages) {
+    const sortedPages = pages.sort((a, b) => a.created - b.created);
+    const mappedPages = sortedPages.map(p => [
+        (p.thumbnailUrl ? `<img class="myTableImg" src="${p.thumbnailUrl}">` : null),
+        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
+        p.status,
+        (p.ogDescription ?? p.title),
+        (status.activeVideoValues.includes(p.status) ?
+            btn.createButton(dv, "status", status.determineInactiveStatus(p), p.file.path) :
+            null),
+    ]);
+    dv.table([], mappedPages);
+}
+
 module.exports = {
     createSection,
     createSections,
     createProgressButtonTV,
+    createProgressImageTV,
+    createProjectTV,
+    createYouTubeTV,
 };
