@@ -18,6 +18,6 @@ const noteInfo = {
     header,
     headerPlural,
     pages,
-    view: input.list ? "list" : "table",
+    view: input.list ? "list" : input.view ?? "table",
 };
 views.createSection(dv, noteInfo);

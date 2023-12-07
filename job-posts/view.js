@@ -20,7 +20,7 @@ if (posts.length > 0) {
         (p["direct link"] ?? p["recruiter link"]),
         (p["job type"] ?? "-"),
         (p["work from"] ?? "-"),
-        (p["application sent"] ? "applied ☑" : ""),
+        (p["application sent"] ? "☑" : "🔳"),
     ]);
     dv.header(2, posts.length > 1 ? "📌 Posts" : "📌 Post");
     dv.table(["Role", "Post", "Type", "Work From", "Applied"], fields);
@@ -43,7 +43,7 @@ if (rejects.length > 0) {
         (p["direct link"] ?? p["recruiter link"]),
         (p["job type"] ?? "-"),
         (p["work from"] ?? "-"),
-        (p["application sent"] ? "applied ☑" : ""),
+        (p["application sent"] ? "☑" : "🔳"),
     ]);
     dv.header(2, rejects.length > 1 ? "👎 Rejections" : "👎 Denied");
     dv.table(["Role", "Post", "Type", "Work From", "Applied"], fields);
