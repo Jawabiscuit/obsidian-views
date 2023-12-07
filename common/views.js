@@ -21,7 +21,15 @@ function createSections(dv, noteInfoBatch) {
 }
 
 /**
- * Creates an element based on given pages information.
+ * Creates a section element based on given pages information.
+ *
+ * A section consists of
+ *   - header
+ *   - view
+ *
+ * A section will only be visible if there are 1 or more pages to display.
+ * The view can either be a list view or any number of table views defined in
+ * view constructors.
  * @param {object} dv - The dataview object
  * @param {Object} noteInfo - Object containing note information like icon, header etc.
  */
@@ -49,10 +57,19 @@ function createSection(dv, noteInfo) {
 }
 
 /**
- * Creates a table view for the given pages.
- * The table contains the file alias if any, or file link if none. It also contains
- * the progress bar element if any, and an HTML button to set the status to inactive
- * if the page status is set to any number of active statuses.
+ * Creates a table view with progress bars and status buttons for the given pages.
+ *
+ * Table view items contain
+ *   - [[alias]] or [[filename]]
+ *   - progress bar
+ *   - status button
+ *
+ * If the page does not have an alias mapped in aliases then the [[alias]] link will
+ * display the [[filename]].
+ * If the page has progress bar view metadata then it will be displayed.
+ * If the page status is set to any number of active statuses a status button will appear
+ * which will allow you to set the status to inactive.
+ * If the "cards" css class is used on the page displaying the table, column titles go away.
  * @param {object} dv - The dataview object
  * @param {Array} pages - Page data to be displayed in the table.
  */
@@ -65,15 +82,24 @@ function createProgressButtonTV(dv, pages) {
             btn.createButton(dv, "status", status.determineInactiveStatus(p), p.file.path) :
             null,
     ]);
-
-    dv.table(["Status", "Progress", "Update"], mappedPages);
+    dv.table(["File", "Progress", "Status"], mappedPages);
 }
 
 /**
- * Description
- * @param {any} dv
- * @param {any} pages
- * @return {any}
+ * Creates a table view with progress bars and images for the given pages.
+ *
+ * Table view items contain
+ *   - image
+ *   - [[alias]] or [[filename]]
+ *   - progress bar
+ *
+ * If the page has image link metadata then an image will be displayed
+ * If the page does not have an alias mapped in aliases then the [[alias]] link will
+ * display the [[filename]].
+ * If the page has progress bar view metadata then it will be displayed.
+ * If the "cards" css class is used on the page displaying the table, column titles go away.
+ * @param {object} dv - The dataview object
+ * @param {Array} pages - Page data to be displayed in the table.
  */
 function createProgressImageTV(dv, pages) {
     const sortedPages = pages.sort((a, b) => a.created - b.created);
@@ -82,15 +108,26 @@ function createProgressImageTV(dv, pages) {
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
         p.bar,
     ]);
-
-    dv.table([], mappedPages);
+    dv.table(["Image", "File", "Progress"], mappedPages);
 }
 
 /**
- * Description
- * @param {any} dv
- * @param {any} pages
- * @return {any}
+ * Creates a project table view for the given pages.
+ *
+ * Table view items contain
+ *   - [[alias]] or [[filename]]
+ *   - subtitle (used for extra info)
+ *   - progress bar
+ *   - [[goal]]
+ *
+ * If the page does not have an alias mapped in aliases then the [[alias]] link will
+ * display the [[filename]].
+ * If the subtitle is set in frontmatter then it is used to display pertinent additional info.
+ * If the page has progress bar view metadata then it will be displayed.
+ * If the page has [[goal]] metadata then it will be displayed.
+ * If the "cards" css class is used on the page displaying the table, column titles go away.
+ * @param {object} dv - The dataview object
+ * @param {Array} pages - Page data to be displayed in the table.
 */
 function createProjectTV(dv, pages) {
     const sortedPages = pages.sort((a, b) => a.created - b.created);
@@ -100,27 +137,39 @@ function createProjectTV(dv, pages) {
         p.bar,
         p.goal,
     ]);
-    dv.table([], mappedPages);
+    dv.table(["File", "Info", "Progress", "Goal"], mappedPages);
 }
 
 /**
- * Description
- * @param {any} dv
- * @param {any} pages
- * @return {any}
+ * Creates a YouTube table view for the given pages.
+ *
+ * Table view items contain
+ *   - image
+ *   - [[alias]] or [[filename]]
+ *   - description or file title
+ *   - status button
+ *
+ * If the page has thumbnail url metadata an image will be displayed
+ * If the page does not have an alias mapped in aliases then the [[alias]] link will
+ * display the [[filename]].
+ * If the page does not have description metadata then the file title is displayed
+ * If the page status is set to any number of active statuses a status button will appear
+ * which will allow you to set the status to inactive.
+ * If the "cards" css class is used on the page displaying the table, column titles go away.
+ * @param {object} dv - The dataview object
+ * @param {Array} pages - Page data to be displayed in the table.
 */
 function createYouTubeTV(dv, pages) {
     const sortedPages = pages.sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
         (p.thumbnailUrl ? `<img class="myTableImg" src="${p.thumbnailUrl}">` : null),
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-        p.status,
         (p.ogDescription ?? p.title),
         (status.activeVideoValues.includes(p.status) ?
             btn.createButton(dv, "status", status.determineInactiveStatus(p), p.file.path) :
             null),
     ]);
-    dv.table([], mappedPages);
+    dv.table(["Thumnail", "File", "Description", "Status"], mappedPages);
 }
 
 module.exports = {
