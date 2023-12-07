@@ -1,70 +1,77 @@
-var pages;
-var fields;
+const status = require(app.vault.adapter.basePath + "/_views/common/status.js");
+const views = require(app.vault.adapter.basePath + "/_views/common/views.js");
+const category = require(app.vault.adapter.basePath + "/_views/common/category.js");
+
 const page = await dv.page(input.file);
 
-// TODO: sort by date applied then date created
-const posts = page.file.inlinks.where(p => {
-    const mp = dv.page(p.path);
-    return (
-        mp.type === "reference" &&
-        (mp.tags?.includes("vfx-job") || mp.tags?.includes("games-job")) &&
-        mp.active === true
-    );
-});
+const noteInfoBatch = collectNoteInfo(
+    page, ["vfx-job", "games-job", "job-denied", "interview-accepted"]);
+views.createSections(dv, noteInfoBatch);
 
-if (posts.length > 0) {
-    pages = posts.map(p => dv.page(p.path));
-    fields = pages.map(p => [
-        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-        (p["direct link"] ?? p["recruiter link"]),
-        (p["job type"] ?? "-"),
-        (p["work from"] ?? "-"),
-        (p["application sent"] ? "☑" : "🔳"),
-    ]);
-    dv.header(2, posts.length > 1 ? "📌 Posts" : "📌 Post");
-    dv.table(["Role", "Post", "Type", "Work From", "Applied"], fields);
+/**                             Helper Functions                              */
+
+/**
+ * Get info used when displaying a view.
+ * For now, categories equate to tags in Obsidian but it's an abstraction in case support
+ * for paths is desired.
+ * @param {object} page - Dataview page object
+ * @param {Array<string>} categories - Array of category keys
+ * @return {Array<objects>} An array of info objects filtered by key
+ */
+function collectNoteInfo(page, categories) {
+    const result = [];
+    for (const key of categories) {
+        if (Object.hasOwn(category, key)) {
+            noteInfo = {...category[key]};
+            if (status.activeJobKeys.includes(key)) {
+                noteInfo.pages = findLinkedPages(
+                    page, status.jobActive[key], null, "reference");
+            } else if (status.inactiveJobKeys.includes(key)) {
+                noteInfo.pages = findLinkedPages(
+                    page, status.jobInactive[key], null, "reference");
+            } else {
+                noteInfo.pages = findLinkedPages(page, null, [key,], "reference");
+            }
+            console.log(noteInfo);
+            result.push(noteInfo);
+        }
+    }
+    return result;
 }
 
-const rejects = page.file.inlinks.where(p => {
-    const mp = dv.page(p.path);
-    return (
-        (mp.type === "reference") &&
-        (mp.tags?.includes("vfx-job") || mp.tags?.includes("games-job")) &&
-        (mp.status === "rejected")
-    );
-});
-
-if (rejects.length > 0) {
-    pages = rejects.map(p => dv.page(p.path));
-    fields = pages.map(p => [
-        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-        (p["direct link"] ?? p["recruiter link"]),
-        (p["job type"] ?? "-"),
-        (p["work from"] ?? "-"),
-        (p["application sent"] ? "☑" : "🔳"),
-    ]);
-    dv.header(2, rejects.length > 1 ? "👎 Rejections" : "👎 Denied");
-    dv.table(["Role", "Post", "Type", "Work From", "Applied"], fields);
-}
-
-const interviews = page.file.inlinks.where(p => {
-    const mp = dv.page(p.path);
-    return (
-        (mp.type === "reference") &&
-        (mp.tags?.includes("vfx-job") || mp.tags?.includes("games-job")) &&
-        (mp.status === "interviewing")
-    );
-});
-
-if (interviews.length > 0) {
-    pages = interviews.map(p => dv.page(p.path));
-    fields = pages.map(p => [
-        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-        (p["direct link"] ?? p["recruiter link"]),
-        (p["job type"] ?? "-"),
-        (p["work from"] ?? "-"),
-        (p["application sent"] ? "applied ☑" : ""),
-    ]);
-    dv.header(2, interviews.length > 1 ? "📞 Interviews" : "📞 Interview");
-    dv.table(["Role", "Post", "Type", "Work From", "Applied"], fields);
+/**
+ * Finds linked pages based on given criteria.
+ * This function takes in a Dataview page object and optional parameters for tags and typeKey.
+ * It returns an array of linked pages that match the given criteria. If no criteria are provided,
+ * it will return all active linked pages.
+ * @param {object} page - Dataview page object
+ * @param {string} status - Statuses to match against each page's status property.
+ * @param {Array<string>} tags - An array of tags to match against each page's tags.
+ * @param {string} type - Type key to match against each page's type.
+ * @param {boolean} active - Active key to match against each page's active status.
+ * @return {Array<Object>} An array of page objects containing all matching pages.
+ * @example
+ *   // Find all active 'reference' type linked pages tagged as either 'vfx-job' or 'games-job'
+ *   let filteredPages = findLinkedPages(dv, myPage, null, ["vfx-job", "games-job"], "reference");
+ *
+ *   // Find all linked pages (unfiltered)
+ *   let unfilteredPages = findLinkedPages(dv, myPage);
+ *   // Expected result: true
+ *   unfilteredPages.length === myPage.file.inlinks.length
+ */
+function findLinkedPages(page, status, tags, type, active) {
+    return page.file.inlinks
+        .where(p => {
+            const mp = dv.page(p.path);
+            return (
+                ((mp.hasOwnProperty("status") && typeof status === "string") ? mp.status === status : true) &&
+                ((!mp.hasOwnProperty("status") && typeof status === "string") ? false : true) &&
+                ((mp.hasOwnProperty("tags") && Array.isArray(tags)) ? tags.some(tag => mp.tags.includes(tag)) : true) &&
+                ((!mp.hasOwnProperty("tags") && Array.isArray(tags)) ? false : true) &&
+                ((mp.hasOwnProperty("type") && typeof type === "string") ? mp.type === type : true) &&
+                ((!mp.hasOwnProperty("type") && typeof type === "string") ? false : true) &&
+                ((mp.hasOwnProperty("active") && typeof active === "boolean") ? mp.active : true) &&
+                ((!mp.hasOwnProperty("active") && typeof active === "boolean") ? false : true)
+            );
+        }).map(p => dv.page(p.path));
 }

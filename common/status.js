@@ -26,6 +26,14 @@ const ACTIVE_VIDEO = {
 
 const INACTIVE_VIDEO = {watched};
 
+const ACTIVE_JOB = {
+    "interview-accepted": "interviewing",
+};
+
+const INACTIVE_JOB = {
+    "job-denied": "rejected",
+};
+
 const ACTIVE_ALL = {...ACTIVE_MAIN, ...ACTIVE_VIDEO};
 
 const INACTIVE_ALL = {...INACTIVE_MAIN, ...INACTIVE_VIDEO};
@@ -37,6 +45,14 @@ const INACTIVE_VALUES = Object.values(INACTIVE_MAIN);
 const ACTIVE_VIDEO_VALUES = Object.values(ACTIVE_VIDEO);
 
 const INACTIVE_VIDEO_VALUES = Object.values(INACTIVE_VIDEO);
+
+const ACTIVE_JOB_VALUES = Object.values(ACTIVE_JOB);
+
+const INACTIVE_JOB_VALUES = Object.values(INACTIVE_JOB);
+
+const ACTIVE_JOB_KEYS = Object.keys(ACTIVE_JOB);
+
+const INACTIVE_JOB_KEYS = Object.keys(INACTIVE_JOB);
 
 const ALL_ACTIVE_VALUES = Object.values(ACTIVE_ALL);
 
@@ -67,12 +83,20 @@ module.exports = {
     inactive: INACTIVE_MAIN,
     videoActive: ACTIVE_VIDEO,
     videoInactive: INACTIVE_VIDEO,
+    jobActive: ACTIVE_JOB,
+    jobInactive: INACTIVE_JOB,
+    allJob: {...ACTIVE_JOB, ...INACTIVE_JOB},
     allActive: {...ACTIVE_MAIN, ...ACTIVE_VIDEO},
     allInactive: {...INACTIVE_MAIN, ...INACTIVE_VIDEO},
     activeValues: ACTIVE_VALUES,
     inactiveValues: INACTIVE_VALUES,
     activeVideoValues: ACTIVE_VIDEO_VALUES,
     inactiveVideoValues: INACTIVE_VIDEO_VALUES,
+    activeJobValues: ACTIVE_JOB_VALUES,
+    inactiveJobValues: INACTIVE_JOB_VALUES,
+    activeJobKeys: ACTIVE_JOB_KEYS,
+    inactiveJobKeys: INACTIVE_JOB_KEYS,
+    allJobValues: {...ACTIVE_JOB_VALUES, ...INACTIVE_JOB_VALUES},
     allActiveValues: ALL_ACTIVE_VALUES,
     allInactiveValues: ALL_INACTIVE_VALUES,
     determineInactiveStatus,

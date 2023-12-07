@@ -1,51 +1,76 @@
 
+const JOB_POST_INFO = {
+    icon: "📌",
+    header: "Post",
+    headerPlural: "Posts",
+    view: "jobPostTV",
+};
+
+const JOB_DENIED = {
+    icon: "👎",
+    header: "Denied",
+    headerPlural: "Denied",
+    view: "jobPostTV",
+};
+
+const INTERVIEW_ACCEPTED = {
+    icon: "📞",
+    header: "Interview",
+    headerPlural: "Interviews",
+    view: "jobPostTV",
+};
+
 module.exports = {
-    goal: {
+    "goal": {
         icon: "🎯",
         header: "Goal",
         headerPlural: "Goals",
         view: "progressImageTV",
     },
-    project: {
+    "project": {
         icon: "🏗",
         header: "Project",
         headerPlural: "Projects",
         view: "projectTV",
     },
-    daily: {
+    "daily": {
         icon: "📆",
         header: "Daily",
         headerPlural: "Dailies",
         view: "progressButtonTV",
     },
-    journal: {
+    "journal": {
         icon: "📓",
         header: "Journal",
         headerPlural: "Journals",
         view: "progressButtonTV",
     },
-    reference: {
+    "reference": {
         icon: "📚",
         header: "Reference",
         headerPlural: "Reference",
         view: "progressButtonTV",
     },
-    meeting: {
+    "meeting": {
         icon: "🧛‍♂🧛‍♀",
         header: "Meeting",
         headerPlural: "Meetings",
         view: "progressButtonTV",
     },
-    yt: {
+    "yt": {
         icon: "📼",
         header: "Video",
         headerPlural: "Videos",
         view: "youTubeTV",
     },
-    chat: {
+    "chat": {
         icon: "🤖💬",
         header: "Chat",
         headerPlural: "Chats",
         view: "progressButtonTV",
     },
+    "games-job": JOB_POST_INFO,
+    "vfx-job": JOB_POST_INFO,
+    "job-denied": JOB_DENIED,
+    "interview-accepted": INTERVIEW_ACCEPTED,
 };
