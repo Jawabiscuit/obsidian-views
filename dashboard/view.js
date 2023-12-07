@@ -26,7 +26,7 @@ function collectNoteInfo(categories) {
     for (const key of categories) {
         if (Object.hasOwn(category, key)) {
             noteInfo = {...category[key]};
-            if (Object.keys(pageFindMethods).includes(key))
+            if (Object.hasOwn(pageFindMethods, key))
                 noteInfo.pages = pageFindMethods[key](`#${key}`);
             else
                 noteInfo.pages = findPagesActive(`#${key}`);
