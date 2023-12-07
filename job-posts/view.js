@@ -6,12 +6,11 @@ const page = await dv.page(input.file);
 const posts = page.file.inlinks.where(p => {
     const mp = dv.page(p.path);
     return (
-        mp.type === "reference"
-        && (mp.tags?.includes("vfx-job") || mp.tags?.includes("games-job"))
-        && mp.active === true
-    )
-}
-);
+        mp.type === "reference" &&
+        (mp.tags?.includes("vfx-job") || mp.tags?.includes("games-job")) &&
+        mp.active === true
+    );
+});
 
 if (posts.length > 0) {
     pages = posts.map(p => dv.page(p.path));
@@ -29,12 +28,11 @@ if (posts.length > 0) {
 const rejects = page.file.inlinks.where(p => {
     const mp = dv.page(p.path);
     return (
-        mp.type === "reference"
-        && (mp.tags?.includes("vfx-job") || mp.tags?.includes("games-job"))
-        && mp.status === "rejected"
-    )
-}
-);
+        (mp.type === "reference") &&
+        (mp.tags?.includes("vfx-job") || mp.tags?.includes("games-job")) &&
+        (mp.status === "rejected")
+    );
+});
 
 if (rejects.length > 0) {
     pages = rejects.map(p => dv.page(p.path));
@@ -52,12 +50,11 @@ if (rejects.length > 0) {
 const interviews = page.file.inlinks.where(p => {
     const mp = dv.page(p.path);
     return (
-        mp.type === "reference"
-        && (mp.tags?.includes("vfx-job") || mp.tags?.includes("games-job"))
-        && mp.status === "interviewing"
-    )
-}
-);
+        (mp.type === "reference") &&
+        (mp.tags?.includes("vfx-job") || mp.tags?.includes("games-job")) &&
+        (mp.status === "interviewing")
+    );
+});
 
 if (interviews.length > 0) {
     pages = interviews.map(p => dv.page(p.path));
