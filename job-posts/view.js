@@ -32,7 +32,6 @@ function collectNoteInfo(page, categories) {
             } else {
                 noteInfo.pages = findLinkedPages(page, null, [key,], "reference");
             }
-            console.log(noteInfo);
             result.push(noteInfo);
         }
     }
