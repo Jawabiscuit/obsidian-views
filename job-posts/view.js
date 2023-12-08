@@ -30,7 +30,7 @@ function collectNoteInfo(page, categories) {
                 noteInfo.pages = findLinkedPages(
                     page, status.jobInactive[key], null, "reference");
             } else {
-                noteInfo.pages = findLinkedPages(page, null, [key,], "reference");
+                noteInfo.pages = findLinkedPages(page, null, [key], "reference");
             }
             result.push(noteInfo);
         }
@@ -40,20 +40,21 @@ function collectNoteInfo(page, categories) {
 
 /**
  * Finds linked pages based on given criteria.
- * This function takes in a Dataview page object and optional parameters for tags and typeKey.
+ * This function takes in a Dataview page object and optional parameters for additional filtering.
  * It returns an array of linked pages that match the given criteria. If no criteria are provided,
  * it will return all active linked pages.
  * @param {object} page - Dataview page object
- * @param {string} status - Statuses to match against each page's status property.
- * @param {Array<string>} tags - An array of tags to match against each page's tags.
- * @param {string} type - Type key to match against each page's type.
+ * @param {string} status - Status to match against each page's status property.
+ * @param {Array<string>} tags - An array of tags to match against each page's tags. If any tags in the
+ * given array match any page tags then that constitutes a match.
+ * @param {string} type - Type metadata key to match against each page's type.
  * @param {boolean} active - Active key to match against each page's active status.
- * @return {Array<Object>} An array of page objects containing all matching pages.
+ * @return {Array<Object>} An array of page objects containing all pages that match the criteria.
  * @example
  *   // Find all active 'reference' type linked pages tagged as either 'vfx-job' or 'games-job'
  *   let filteredPages = findLinkedPages(dv, myPage, null, ["vfx-job", "games-job"], "reference");
  *
- *   // Find all linked pages (unfiltered)
+ *   // Find all linked pages (no filtering)
  *   let unfilteredPages = findLinkedPages(dv, myPage);
  *   // Expected result: true
  *   unfilteredPages.length === myPage.file.inlinks.length

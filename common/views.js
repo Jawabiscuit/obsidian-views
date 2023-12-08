@@ -75,7 +75,7 @@ function createSection(dv, noteInfo) {
  * @param {Array} pages - Page data to be displayed in the table.
  */
 function createProgressButtonTV(dv, pages) {
-    const sortedPages = pages.sort((a, b) => a.created - b.created);
+    const sortedPages = [...pages].sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
         p.file.aliases?.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link,
         p.bar,
@@ -103,7 +103,7 @@ function createProgressButtonTV(dv, pages) {
  * @param {Array} pages - Page data to be displayed in the table.
  */
 function createProgressImageTV(dv, pages) {
-    const sortedPages = pages.sort((a, b) => a.created - b.created);
+    const sortedPages = [...pages].sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
         (p.img ? `<img class="myTableImg" src="${app.vault.adapter.basePath}/${p.img.path}">` : null),
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
@@ -131,7 +131,7 @@ function createProgressImageTV(dv, pages) {
  * @param {Array} pages - Page data to be displayed in the table.
 */
 function createProjectTV(dv, pages) {
-    const sortedPages = pages.sort((a, b) => a.created - b.created);
+    const sortedPages = [...pages].sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
         p.subtitle,
@@ -161,7 +161,7 @@ function createProjectTV(dv, pages) {
  * @param {Array} pages - Page data to be displayed in the table.
 */
 function createYouTubeTV(dv, pages) {
-    const sortedPages = pages.sort((a, b) => a.created - b.created);
+    const sortedPages = [...pages].sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
         (p.thumbnailUrl ? `<img class="myTableImg" src="${p.thumbnailUrl}">` : null),
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
@@ -174,13 +174,12 @@ function createYouTubeTV(dv, pages) {
 }
 
 /**
- * Description
- * @param {any} dv
- * @param {any} pages
- * @return {any}
+ * This function creates a job post table view using dataview object and page data.
+ * @param {object} dv - The dataview object
+ * @param {Array} pages - Dataview page data to be displayed in the table.
  */
 function createJobPostTV(dv, pages) {
-    const sortedPages = pages.sort((a, b) => a.created - b.created);
+    const sortedPages = [...pages].sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
         (p["direct link"] ?? p["recruiter link"]),
