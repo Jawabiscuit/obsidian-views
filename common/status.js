@@ -34,9 +34,11 @@ const INACTIVE_JOB = {
     "job-denied": "rejected",
 };
 
-const ACTIVE_ALL = {...ACTIVE_MAIN, ...ACTIVE_VIDEO};
+const ACTIVE_ALL = {...ACTIVE_MAIN, ...ACTIVE_VIDEO, ...ACTIVE_JOB};
 
-const INACTIVE_ALL = {...INACTIVE_MAIN, ...INACTIVE_VIDEO};
+const INACTIVE_ALL = {...INACTIVE_MAIN, ...INACTIVE_VIDEO, ...INACTIVE_JOB};
+
+const ALL = {...ACTIVE_ALL, ...INACTIVE_ALL};
 
 const ACTIVE_VALUES = Object.values(ACTIVE_MAIN);
 
@@ -86,8 +88,9 @@ module.exports = {
     jobActive: ACTIVE_JOB,
     jobInactive: INACTIVE_JOB,
     allJob: {...ACTIVE_JOB, ...INACTIVE_JOB},
-    allActive: {...ACTIVE_MAIN, ...ACTIVE_VIDEO},
-    allInactive: {...INACTIVE_MAIN, ...INACTIVE_VIDEO},
+    all: ALL,
+    allActive: ACTIVE_ALL,
+    allInactive: INACTIVE_ALL,
     activeValues: ACTIVE_VALUES,
     inactiveValues: INACTIVE_VALUES,
     activeVideoValues: ACTIVE_VIDEO_VALUES,
