@@ -14,7 +14,7 @@ const pages = dv.pages(`"${page.file.folder}"`)
     .where(p => p.file.name.match(regex)[2] === page.file.name.match(regex)[2])
     .map(p => [p.file.name, p.file.day])
     .sort(p => p[1]);
-const isoDate = page.file.day ? page.file.day.toISODate() : dv.date.now().toISODate();
+const isoDate = page.file.day ? page.file.day.toISODate() : dv.date("now").toISODate();
 
 // Obsidian uses moment.js; Luxon’s format strings differ!
 // const format = app['internalPlugins']['plugins']['daily-notes']['instance']['options']['format'] || 'YYYY-MM-DD';
