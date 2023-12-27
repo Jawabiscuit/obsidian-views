@@ -1,4 +1,4 @@
-const status = require(app.vault.adapter.basePath + "/_views/common/status.js");
+const status = self.require("_modules/status.js");
 const views = require(app.vault.adapter.basePath + "/_views/common/views.js");
 const category = require(app.vault.adapter.basePath + "/_views/common/category.js");
 
