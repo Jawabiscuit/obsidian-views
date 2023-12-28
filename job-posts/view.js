@@ -1,6 +1,6 @@
 const status = self.require("_modules/status.js");
 const views = self.require("_views/common/views.js");
-const category = self.require("_views/common/category.js");
+const category = self.require("_modules/category.js");
 
 const page = await dv.page(input.file);
 
