@@ -1,5 +1,5 @@
 const status = self.require("_modules/status.js");
-const btn = require(app.vault.adapter.basePath + "/_views/common/update-button.js");
+const btn = self.require("_views/common/update-button.js");
 
 const viewConstructors = {
     table: createProgressButtonTV,

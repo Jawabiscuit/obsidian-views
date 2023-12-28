@@ -1,4 +1,4 @@
-const views = require(app.vault.adapter.basePath + "/_views/common/views.js");
+const views = self.require("_views/common/views.js");
 
 const page = dv.page(input.file);
 const searchTerm = input.searchTerm;

@@ -1,4 +1,4 @@
-const pb = require(app.vault.adapter.basePath + "/_views/common/progress-bar.js");
+const pb = self.require("_views/common/progress-bar.js");
 
 const page = dv.page(input.file);
 const searchTerms = pb.getSearchTerms(input);

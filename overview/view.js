@@ -5,8 +5,8 @@
 
 const {DateTime} = dv.luxon;
 
-const views = require(app.vault.adapter.basePath + "/_views/common/views.js");
-const category = require(app.vault.adapter.basePath + "/_views/common/category.js");
+const views = self.require("_views/common/views.js");
+const category = self.require("_views/common/category.js");
 
 const tags = input.tags;
 const interval = input.interval ?? "7";
