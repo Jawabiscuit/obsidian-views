@@ -5,6 +5,7 @@ const viewConstructors = {
     table: createProgressButtonTV,
     progressButtonTV: createProgressButtonTV,
     progressImageTV: createProgressImageTV,
+    companyTV: createCompanyTV,
     projectTV: createProjectTV,
     youTubeTV: createYouTubeTV,
     jobPostTV: createJobPostTV,
@@ -113,6 +114,22 @@ function createProgressImageTV(dv, pages) {
 }
 
 /**
+ * Creates a table view with images, links, and posts for the given pages.
+ *
+ * @param {object} dv - The dataview object
+ * @param {Array} pages - Page data to be displayed in the table
+*/
+function createCompanyTV(dv, pages) {
+    const sortedPages = [...pages].sort((a, b) => a.created - b.created);
+    const mappedPages = sortedPages.map(p => [
+        (p.img ? `<img class="myTableImg" src="${app.vault.adapter.basePath}/${p.img.path}">` : null),
+        (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
+        p.posts,
+    ]);
+    dv.table(["Image", "File", "Posts"], mappedPages);
+}
+
+/**
  * Creates a project table view for the given pages.
  *
  * Table view items contain
@@ -195,6 +212,7 @@ module.exports = {
     createSections,
     createProgressButtonTV,
     createProgressImageTV,
+    createCompanyTV,
     createProjectTV,
     createYouTubeTV,
     createJobPostTV,
