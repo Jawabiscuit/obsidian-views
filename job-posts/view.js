@@ -3,9 +3,15 @@ const views = self.require("_views/common/views.js");
 const category = self.require("_modules/category.js");
 
 const page = await dv.page(input.file);
+const tags = input.tags;
 
-const noteInfoBatch = collectNoteInfo(
-    page, ["vfx-job", "games-job", "job-denied", "interview-accepted"]);
+let noteInfoBatch;
+if (Array.isArray(tags) && tags.length) {
+    noteInfoBatch = collectNoteInfo(page, tags);
+} else {
+    collectNoteInfo(page, ["vfx-job", "games-job", "job-denied", "interview-accepted"]);
+}
+
 views.createSections(dv, noteInfoBatch);
 
 /**                             Helper Functions                              */
