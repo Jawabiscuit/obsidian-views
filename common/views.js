@@ -199,10 +199,10 @@ function createJobPostTV(dv, pages) {
     const sortedPages = [...pages].sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
-        (p["direct link"] ?? p["recruiter link"]),
-        (p["job type"] ?? null),
-        (p["work from"] ?? null),
-        (p["application sent"] ? "☑" : "🔳"),
+        (p["directLink"] ?? p["recruiter link"]),
+        (p["jobType"] ?? null),
+        (p["workFrom"] ?? null),
+        (p["appSent"] ? "☑" : "🔳"),
     ]);
     dv.table(["Role", "Post", "Type", "Work From", "Applied"], mappedPages);
 }

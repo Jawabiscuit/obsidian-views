@@ -9,7 +9,7 @@ let noteInfoBatch;
 if (Array.isArray(tags) && tags.length) {
     noteInfoBatch = collectNoteInfo(page, tags);
 } else {
-    collectNoteInfo(page, ["vfx-job", "games-job", "job-denied", "interview-accepted"]);
+    collectNoteInfo(page, ["job-post", "vfx-job", "games-job", "job-denied", "interview-accepted"]);
 }
 
 views.createSections(dv, noteInfoBatch);
@@ -31,12 +31,12 @@ function collectNoteInfo(page, categories) {
             noteInfo = {...category[key]};
             if (status.activeJobKeys.includes(key)) {
                 noteInfo.pages = findLinkedPages(
-                    page, status.jobActive[key], null, "reference");
+                    page, status.jobActive[key], null);
             } else if (status.inactiveJobKeys.includes(key)) {
                 noteInfo.pages = findLinkedPages(
-                    page, status.jobInactive[key], null, "reference");
+                    page, status.jobInactive[key], null);
             } else {
-                noteInfo.pages = findLinkedPages(page, null, [key], "reference");
+                noteInfo.pages = findLinkedPages(page, null, [key]);
             }
             result.push(noteInfo);
         }
@@ -53,7 +53,6 @@ function collectNoteInfo(page, categories) {
  * @param {string} status - Status to match against each page's status property.
  * @param {Array<string>} tags - An array of tags to match against each page's tags. If any tags in the
  * given array match any page tags then that constitutes a match.
- * @param {string} type - Type metadata key to match against each page's type.
  * @param {boolean} active - Active key to match against each page's active status.
  * @return {Array<Object>} An array of page objects containing all pages that match the criteria.
  * @example
@@ -74,8 +73,6 @@ function findLinkedPages(page, status, tags, type, active) {
                 ((!mp.hasOwnProperty("status") && typeof status === "string") ? false : true) &&
                 ((mp.hasOwnProperty("tags") && Array.isArray(tags)) ? tags.some(tag => mp.tags.includes(tag)) : true) &&
                 ((!mp.hasOwnProperty("tags") && Array.isArray(tags)) ? false : true) &&
-                ((mp.hasOwnProperty("type") && typeof type === "string") ? mp.type === type : true) &&
-                ((!mp.hasOwnProperty("type") && typeof type === "string") ? false : true) &&
                 ((mp.hasOwnProperty("active") && typeof active === "boolean") ? mp.active : true) &&
                 ((!mp.hasOwnProperty("active") && typeof active === "boolean") ? false : true)
             );
