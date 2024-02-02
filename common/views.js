@@ -180,7 +180,7 @@ function createProjectTV(dv, pages) {
 function createYouTubeTV(dv, pages) {
     const sortedPages = [...pages].sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
-        (p.thumbnailUrl ? `<img class="myTableImg" src="${p.thumbnailUrl}">` : null),
+        (p.thumbnailUrl ? `<img class="myTableImg" src="${p.thumbnailUrl.replace(/<|>/g, "")}">` : null),
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
         (p.ogDescription ?? p.title),
         (status.activeVideoValues.includes(p.status) ?

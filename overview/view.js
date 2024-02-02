@@ -30,7 +30,6 @@ if (Array.isArray(tags) && tags.length) {
     args.push(Object.keys(category));
 }
 
-console.log("args", args);
 const noteInfoBatch = collectNoteInfo(...args);
 views.createSections(dv, noteInfoBatch);
 
