@@ -7,20 +7,22 @@ const {DateTime} = dv.luxon;
 
 const views = self.require("_views/common/views.js");
 const category = self.require("_modules/category.js");
+const {toMoment} = self.require("_modules/periodic.js");
 
 const thisPage = dv.page(input.file);
 const tags = input.tags;
 const interval = input.interval ?? "7";
 const linked = input.linked ?? false;
 const intervalDays = `${interval} days`;
-const dateStr = dv.func.regexreplace(input.file, "^([0-9]+-[0-9]+-[0-9]+)(.*)", "$1");
-const STARTDAY = DateTime.fromMillis(dv.date(dateStr) - dv.duration(intervalDays));
-const ENDDAY = dv.date(dateStr);
+
+const startDate = toMoment(input.file);
+const STARTDAY = DateTime.fromMillis(startDate.valueOf());
+const ENDDAY = DateTime.fromMillis(STARTDAY + dv.duration(intervalDays));
 
 const args = [];
 if (Array.isArray(tags) && tags.length) {
     args.push(tags);
-    if (parseInt(interval) > 0)
+    if (parseInt(interval) >= 0)
         args.push(STARTDAY, ENDDAY);
     else
         args.push(null, null);
@@ -66,16 +68,18 @@ function collectNoteInfo(tags, startDay, endDay, page) {
 /**
  * Searches for pages based on searchTerm within a specified date range.
  * @param {string} searchTerm - Term used to search for pages.
- * @param {Date} startDay - Start day of the date range.
- * @param {Date} endDay - End day of the date range.
+ * @param {DateTime} startDay - Start day of the date range.
+ * @param {DateTime} endDay - End day of the date range.
  * @param {Object} page - Dataview page
  *
  * @return {Array<object>} Array of pages matching criteria, excluding those under 'template' path.
  */
 function findPagesRanged(searchTerm, startDay, endDay, page) {
     return findPages(searchTerm, page)
-        .where(p => p.file.day && p.file.day >= startDay)
-        .where(p => p.file.day && p.file.day <= endDay);
+        .where(p => p.file.day && p.file.day >= startDay ||
+            toMoment(p.file.name) >= startDay)
+        .where(p => p.file.day && p.file.day <= endDay ||
+            toMoment(p.file.name) <= endDay);
 }
 
 /**
@@ -85,7 +89,7 @@ function findPagesRanged(searchTerm, startDay, endDay, page) {
  * otherwise all files are searched.
  *
  * @param {string} searchTerm - Term used to search for pages.
- * @param {Object} page - Dataview page
+ * @param {Object} page - (Optional) Find linked pages for this Dataview page
  *
  * @return {Array<object>} Array of pages matching criteria, excluding those under 'template' path.
  */
@@ -100,7 +104,8 @@ function findPages(searchTerm, page) {
     }
     return dv.pages(searchTerm)
         .where(p => p != thisPage)
-        .where(p => !p.file.path.includes("template"))
+        .where(p => !p.file.path.includes("_mm"))
+        .where(p => !p.file.path.includes("_template"))
         .where(p => !p.file.name.includes("tags"))
         .sort(p => p.file.ctime, "desc");
 }
