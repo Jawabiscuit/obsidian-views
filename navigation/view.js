@@ -17,7 +17,7 @@ const pages = dv.pages(`"${page.file.folder}"`)
     .sort(p => p[1]);
 const pageDate = toMoment(page.file.name);
 const next = pages.find(p => p[1] > pageDate);
-const prev = pages.sort(p => p[1], "desc").find(p => p[1] < pageDate);
+const prev = pages.values.toReversed().find(p => p[1] < pageDate);
 
 const nav = [];
 nav.push(prev ? `[[${prev[0]}|${prev[1].format(dateFmt)}]] ◀` : null);
