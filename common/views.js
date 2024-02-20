@@ -1,5 +1,4 @@
-const status = self.require("_modules/status.js");
-const btn = self.require("_views/common/update-button.js");
+const {fieldModifier:f} = MetadataMenu.api;
 
 const viewConstructors = {
     table: createProgressButtonTV,
@@ -80,9 +79,7 @@ function createProgressButtonTV(dv, pages) {
     const mappedPages = sortedPages.map(p => [
         p.file.aliases?.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link,
         p.bar,
-        status.allActiveValues.includes(p.status) ?
-            btn.createButton(dv, "status", status.determineInactiveStatus(p), p.file.path) :
-            null,
+        f(dv, p, "status", {options: {alwaysOn: true}}),
     ]);
     dv.table(["File", "Progress", "Status"], mappedPages);
 }
@@ -150,10 +147,12 @@ function createCompanyTV(dv, pages) {
 function createProjectTV(dv, pages) {
     const sortedPages = [...pages].sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
+        (p.img ? `<img class="myTableImg" src="${app.vault.adapter.basePath}/${p.img.path}">` : null),
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
         p.subtitle,
         p.bar,
         p.goal,
+        f(dv, p, "status", {options: {alwaysOn: true}}),
     ]);
     dv.table(["File", "Info", "Progress", "Goal"], mappedPages);
 }
@@ -183,9 +182,7 @@ function createYouTubeTV(dv, pages) {
         (p.thumbnailUrl ? `<img class="myTableImg" src="${p.thumbnailUrl.replace(/<|>/g, "")}">` : null),
         (p.file.aliases.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link),
         (p.ogDescription ?? p.title),
-        (status.activeVideoValues.includes(p.status) ?
-            btn.createButton(dv, "status", status.determineInactiveStatus(p), p.file.path) :
-            null),
+        f(dv, p, "status", {options: {alwaysOn: true}}),
     ]);
     dv.table(["Thumnail", "File", "Description", "Status"], mappedPages);
 }
@@ -202,9 +199,11 @@ function createJobPostTV(dv, pages) {
         (p["directLink"] ?? p["recruiter link"]),
         (p["jobType"] ?? null),
         (p["workFrom"] ?? null),
-        (p["appSent"] ? "☑" : "🔳"),
+        f(dv, p, "status", {options: {alwaysOn: true}}),
+        f(dv, p, "active", {options: {alwaysOn: true}}),
+        f(dv, p, "appSent", {options: {alwaysOn: true}}),
     ]);
-    dv.table(["Role", "Post", "Type", "Work From", "Applied"], mappedPages);
+    dv.table(["Role", "Post", "Type", "Work From", "Status", "Active", "App Sent"], mappedPages);
 }
 
 module.exports = {
