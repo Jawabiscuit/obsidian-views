@@ -6,16 +6,19 @@
  *  Mon 3 Dec ▶ [[2023-12-04|Tue 4 Dec]]
  *  null
 */
-const {toMoment} = self.require("_modules/periodic.js");
+const {toMoment, PREFIXED_REGEX} = self.require("_modules/periodic.js");
 
 const dateFmt = "ddd Do MMM";
 const page = dv.page(input.file);
 const regex = /^(\d{4}-\d{2}-\d{2})(.*)$/;
+const match = page.file.name.match(PREFIXED_REGEX);
+const suffix = match?.groups.suffix;
+const pageDate = toMoment(page.file.name);
+
 const pages = dv.pages(`"${page.file.folder}"`)
-    .where(p => p.type && p.type === page.type)
+    .where(p => suffix ? p.file.name.match(PREFIXED_REGEX)?.groups.suffix === suffix : p.type && p.type === page.type)
     .map(p => [p.file.name, toMoment(p.file.name)])
     .sort(p => p[1]);
-const pageDate = toMoment(page.file.name);
 const next = pages.find(p => p[1] > pageDate);
 const prev = pages.values.toReversed().find(p => p[1] < pageDate);
 
