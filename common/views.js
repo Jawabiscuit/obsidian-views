@@ -78,10 +78,11 @@ function createProgressButtonTV(dv, pages) {
     const sortedPages = [...pages].sort((a, b) => a.created - b.created);
     const mappedPages = sortedPages.map(p => [
         p.file.aliases?.length ? dv.func.link(p.file.path, p.file.aliases[0]) : p.file.link,
+        moment(p.created).format("ddd Do MMM"),
         p.bar,
         f(dv, p, "status", {options: {alwaysOn: true}}),
     ]);
-    dv.table(["File", "Progress", "Status"], mappedPages);
+    dv.table(["File", "Date", "Progress", "Status"], mappedPages);
 }
 
 /**
